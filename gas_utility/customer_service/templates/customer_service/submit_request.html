@@ -1,0 +1,115 @@
+{% extends "customer_service/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Submit Service Request</h2>
+    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_request_type" class="form-label">Type:</label>
+            {{ form.request_type }}
+            {% if form.request_type.errors %}
+                <div class="invalid-feedback">
+                    {{ form.request_type.errors|join:", " }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="id_details" class="form-label">Details:</label>
+            {{ form.details }}
+            {% if form.details.errors %}
+                <div class="invalid-feedback">
+                    {{ form.details.errors|join:", " }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="id_attachments" class="form-label">Attachments:</label>
+            {{ form.attachments }}
+            {% if form.attachments.errors %}
+                <div class="invalid-feedback">
+                    {{ form.attachments.errors|join:", " }}
+                </div>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Submit Request</button>
+    </form>
+</div>
+
+<script>
+    // Bootstrap form validation script
+    (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+
+    // Add form-control class and placeholders to form fields if needed
+    document.addEventListener('DOMContentLoaded', function() {
+        const formElements = document.querySelectorAll('.mb-3 > *:not(label):not(.invalid-feedback)'); // Select direct children of mb-3 except labels and error messages
+
+        formElements.forEach(element => {
+            if (element.tagName === 'SELECT' || element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                element.classList.add('form-control');
+
+                if (element.id === 'id_details' && !element.getAttribute('placeholder')) {
+                    element.setAttribute('placeholder', 'Enter details of your service request');
+                }
+                if (element.id === 'id_attachments' && !element.getAttribute('placeholder')) {
+                    element.setAttribute('placeholder', 'Upload attachments if necessary');
+                }
+                if (element.id === 'id_request_type' && !element.getAttribute('placeholder')) {
+                    element.setAttribute('placeholder', 'Select request type'); // Placeholder for select might not be ideal, consider default option in form
+                }
+            }
+            if (element.classList.contains('form-check')) { // Handle form-check elements if any are used in form fields
+                element.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
+                    input.classList.add('form-check-input');
+                });
+                element.querySelectorAll('label').forEach(label => {
+                    label.classList.add('form-check-label');
+                });
+            }
+
+            // Handle error display by adding 'is-invalid' class and 'invalid-feedback' div
+            if (element.previousElementSibling && element.previousElementSibling.getAttribute('for') && element.id === element.previousElementSibling.getAttribute('for')) {
+                const fieldName = element.id.substring(3); // remove 'id_' prefix
+                const errorDiv = document.querySelector(`.invalid-feedback:has(+.mb-3 > #${element.id})`); // Select error div associated with the current field using CSS :has selector (modern browsers) - fallback below
+
+                if (errorDiv) {
+                    element.classList.add('is-invalid');
+                }
+            }
+        });
+
+        // Fallback for browsers not supporting :has selector in querySelectorAll (older browsers)
+        if (!CSS.supports('selector(:has(+ .mb-3 > #id_request_type))')) { // Check if :has is not supported
+            document.querySelectorAll('.invalid-feedback').forEach(errorDiv => {
+                const nextSibling = errorDiv.nextElementSibling;
+                if (nextSibling && nextSibling.classList.contains('mb-3')) {
+                    const inputElement = nextSibling.querySelector('select.form-control, input.form-control, textarea.form-control');
+                    if (inputElement) {
+                        inputElement.classList.add('is-invalid');
+                    }
+                }
+            });
+        }
+    });
+
+
+</script>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "customer_service/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="card-title mb-0">Sign Up</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+
+                        {% for field in form %}
+                            <div class="mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                {% if field.field.widget.input_type == 'password' %}  <!-- Check input type -->
+                                    <div class="input-group">
+                                        {{ field }}
+                                        <button type="button" class="btn btn-outline-secondary" id="toggle_{{ field.id_for_label }}">Show</button>
+                                    </div>
+                                {% else %}
+                                    {{ field }}
+                                {% endif %}
+
+                                {% if field.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ field.errors|join:", " }}
+                                    </div>
+                                {% endif %}
+                                {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+
+                        <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+                    </form>
+                </div>
+                 <div class="card-footer text-center bg-light">
+                    <small>Already have an account? <a href="{% url 'login' %}" class="text-decoration-none">Login</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Bootstrap form validation
+    (function () {
+        'use strict'
+
+        var forms = document.querySelectorAll('.needs-validation')
+
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })();
+
+    // Add form-control class and handle password visibility
+    document.addEventListener('DOMContentLoaded', function() {
+      const formElements = document.querySelectorAll('.mb-3 > *:not(label):not(.invalid-feedback):not(.input-group)');
+
+      formElements.forEach(element => {
+          if (element.tagName === 'SELECT' || element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+              element.classList.add('form-control');
+              if (element.classList.contains('is-invalid')) { // Re-apply is-invalid
+                  element.classList.add('is-invalid');
+              }
+          }
+      });
+
+        // Password visibility toggle.  More robust and concise.
+        document.querySelectorAll('.input-group button[id^="toggle_"]').forEach(button => {
+            button.addEventListener('click', function() {
+                const input = this.previousElementSibling; // Get the input field
+                if (input && input.type === 'password') {
+                    input.type = 'text';
+                    this.textContent = 'Hide';
+                } else if (input) {
+                    input.type = 'password';
+                    this.textContent = 'Show';
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}s

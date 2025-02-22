@@ -1,0 +1,58 @@
+{% extends "admin/change_list.html" %}
+{% load static i18n admin_urls admin_list %}
+
+{% block extrahead %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+  <script src="{% static 'js/admin.js' %}"></script>
+{% endblock %}
+
+{% block breadcrumbs %}
+  <div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+    &rsaquo; <a href="{% url 'admin:app_list' app_label=cl.opts.app_label %}">{{ cl.opts.app_config.verbose_name }}</a>
+    &rsaquo; {% trans 'Service Requests' %}
+  </div>
+{% endblock %}
+
+{% block content_title %}
+  <h1>Service Requests Management Portal</h1>
+{% endblock %}
+
+{% block object-tools %}
+  <div class="object-tools">
+    {% if has_add_permission %}
+      {% url cl.opts|admin_urlname:'add' as add_url %}
+      <a href="{% add_preserved_filters add_url is_popup to_field %}" class="addlink">
+        {% trans 'Add Service Request' %}
+      </a>
+    {% endif %}
+    {% if cl.has_filter_specs %}
+      <a href="{% url 'admin:customer_service_servicerequest_changelist' %}?{{ request.GET.urlencode }}" 
+         class="changelist-filter">Filters</a>
+    {% endif %}
+  </div>
+{% endblock %}
+
+{% block searchbox %}
+  <form id="changelist-search" method="get">
+    <div class="search">
+      <input type="text" name="q" value="{{ cl.query }}">
+      <input type="submit" value="{% trans 'Search' %}">
+    </div>
+  </form>
+{% endblock %}
+
+{% block result_list %}
+  {% if action_form and actions_on_top and cl.full_result_count %}{% admin_actions %}{% endif %}
+  {% result_list cl %}
+  {% if action_form and actions_on_bottom and cl.full_result_count %}{% admin_actions %}{% endif %}
+{% endblock %}
+
+{% block pagination %}
+  {% if cl.paginator.num_pages > 1 %}
+    <div class="paginator">
+      {% pagination cl %}
+    </div>
+  {% endif %}
+{% endblock %}

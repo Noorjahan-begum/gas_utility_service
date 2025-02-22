@@ -1,0 +1,16 @@
+{% extends "customer_service/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="jumbotron bg-light text-center rounded p-5">
+        <h1 class="display-4 fw-bold">Welcome to Gas Utility Customer Service</h1>
+        <p class="lead mb-4">Login or create an account to submit service requests.</p>
+        <hr class="my-4">
+        <p class="mb-3">We are here to help you with all your gas utility needs.</p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <a class="btn btn-primary btn-lg px-4 gap-4 m-2" href="{% url 'login' %}" role="button">Login</a>
+            <a class="btn btn-outline-secondary btn-lg px-4 m-2" href="{% url 'signup' %}" role="button">Create Account</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

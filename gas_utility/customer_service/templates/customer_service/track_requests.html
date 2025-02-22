@@ -1,0 +1,32 @@
+{% extends "customer_service/base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Request Tracker</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Submitted</th>
+                    <th>Resolved</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in requests %}
+                <tr>
+                    <td>{{ request.id }}</td>
+                    <td>{{ request.request_type }}</td>
+                    <td>{{ request.get_status_display }}</td>
+                    <td>{{ request.created_at }}</td>
+                    <td>{{ request.resolved_at }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="text-center">No pending requests</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

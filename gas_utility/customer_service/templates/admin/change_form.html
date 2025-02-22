@@ -1,0 +1,43 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+
+{% block extrahead %}
+  {{ block.super }}
+  <style>
+    .attachment-item img { max-width: 300px; }
+    .attachment-item a { display: block; margin-bottom: 10px; }
+    .form-row.field-status select { background-color: #f0f0f0; width: 200px; }
+  </style>
+{% endblock %}
+
+{% block form_top %}
+  <div class="module">
+    <h2>Request Overview</h2>
+    <p>
+      <strong>Status:</strong> {{ original.get_status_display }}
+      <strong>Submitted by:</strong> {{ original.user }}
+      <strong>Date created:</strong> {{ original.created_at }}
+    </p>
+  </div>
+{% endblock %}
+
+{% block after_field_sets %}
+  {% if original %}
+    <div class="module">
+      <h2>Attachments</h2>
+      {% if original.servicerequestattachment_set.all %}
+        {% for attachment in original.servicerequestattachment_set.all %}
+          <div class="attachment-item">
+            {% if attachment.file.name|slice:".4:" == ".jpg" or attachment.file.name|slice:".4:" == ".png" %}
+              <img src="{{ attachment.file.url }}" alt="Attachment">
+            {% else %}
+              <a href="{{ attachment.file.url }}">{{ attachment.file.name }}</a>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>No attachments for this request.</p>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endblock %}
